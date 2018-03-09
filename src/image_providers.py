@@ -105,8 +105,8 @@ class CvImageProvider(TrackingImageProvider):
         text = "No contour found at frame: {}".format(self._stream.currentFrameIdx)
         text2 = "Please check your parameters"
         text3 = "And ensure specimen is there"
-        x = 10
-        y = imgSize[0]/2
+        x = int(10)
+        y = int(imgSize[0]/2)
         ySpacing = 40
         yellow = (255, 255, 0)
         fontSize = 75/100.0

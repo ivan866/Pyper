@@ -57,9 +57,9 @@ if __name__ == '__main__':
     def promptDelete(folder):
         msg = 'The folder {} exists, '.format(folder)
         msg += "do you want to delete it ('Y','N')?\n"
-        answer = raw_input(msg).upper()
+        answer = input(msg).upper()
         if answer not in ('Y', 'N'):
-            print('{} is not a valid answer'.format(answer))
+            print(('{} is not a valid answer'.format(answer)))
             answer = promptDelete(folder)
         return True if answer == 'Y' else False
         
@@ -70,8 +70,8 @@ if __name__ == '__main__':
                 tmpDest = os.path.join(tempfile.gettempdir(), prefix)
                 if os.path.isdir(tmpDest): shutil.rmtree(tmpDest)
                 shutil.move(destFolder, tmpDest)
-                print('Your folder has been moved to {}, where you can retrive it before it is deleted by a reboot of your machine'\
-                .format(tmpDest))
+                print(('Your folder has been moved to {}, where you can retrive it before it is deleted by a reboot of your machine'\
+                .format(tmpDest)))
         os.mkdir(destFolder)
         return destFolder
 

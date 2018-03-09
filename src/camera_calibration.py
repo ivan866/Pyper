@@ -86,7 +86,7 @@ class CameraCalibration(object):
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             found, corners = cv2.findChessboardCorners(gray, (self.chessWidth, self.chessHeight))
             if found:
-                print('Image {}, corners found'.format(imgPath))
+                print(('Image {}, corners found'.format(imgPath)))
                 objPoints.append(objp)
                 if subPixel:
                     corners = cv2.cornerSubPix(gray, corners, (11,11), (-1,-1), self.criteria)
@@ -95,7 +95,7 @@ class CameraCalibration(object):
                 cv2.drawChessboardCorners(img, (self.chessWidth, self.chessHeight), corners, found)
                 detectedImgs.append(img)
             else:
-                print('Image {}, no corners found'.format(imgPath))
+                print(('Image {}, no corners found'.format(imgPath)))
         calibrationResults = cv2.calibrateCamera(objPoints, imgPoints, gray.shape[::-1])
         flag = calibrationResults[0]
         if not flag:

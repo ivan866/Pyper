@@ -11,7 +11,7 @@ If running on an ARM processor, it assumes the platform is a Raspberry Pi and th
 instead of a usb camera by default. It also slightly optimises for speed.
 :author: crousse
 """
-from __future__ import division
+
 
 import platform
 
@@ -97,7 +97,7 @@ class Viewer(object):
         if bgFrame is None:
             bgFrame = 0
         if __debug__:
-            print(bgFrame, trackStart, trackEnd)
+            print((bgFrame, trackStart, trackEnd))
         return (bgFrame, trackStart, trackEnd)
         
     def timeStrToFrameIdx(self, timeStr):
@@ -266,7 +266,7 @@ class Tracker(object):
                     if record: self._stream._save(self.silhouette)
                 if isRecording: pbar.update(self._stream.currentFrameIdx)
             except VideoStreamFrameException as e:
-                print('Error with video_stream at frame {}: \n{}'.format(fid, e))
+                print(('Error with video_stream at frame {}: \n{}'.format(fid, e)))
             except (KeyboardInterrupt, EOFError) as e:
                 if isRecording: pbar.finish()
                 msg = "Recording stopped by user" if (type(e) == KeyboardInterrupt) else str(e)
@@ -405,15 +405,15 @@ class Tracker(object):
             else:
                 if area > self.maxArea:
                     if not fast:
-                        print('Frame: {}, found something too big in the arena ({} > {})'.format(
-                        self._stream.currentFrameIdx, area, self.maxArea))
+                        print(('Frame: {}, found something too big in the arena ({} > {})'.format(
+                        self._stream.currentFrameIdx, area, self.maxArea)))
                 else:
                     if not fast:
-                        print('Frame: {}, biggest structure too small ({} < {})'.format(
-                        self._stream.currentFrameIdx, area, self.minArea))
+                        print(('Frame: {}, biggest structure too small ({} < {})'.format(
+                        self._stream.currentFrameIdx, area, self.minArea)))
                 return None
         else:
-            print('Frame {}, no contour found'.format(self._stream.currentFrameIdx))
+            print(('Frame {}, no contour found'.format(self._stream.currentFrameIdx)))
             return None
         self._checkTeleportation(frame, silhouette)
         return plotSilhouette if plotSilhouette is not None else silhouette
@@ -429,7 +429,7 @@ class Tracker(object):
         :rtype: time object
         """
         fps = 1/(time()-prevTime)
-        print("{} fps".format(fps))
+        print(("{} fps".format(fps)))
         return time()
         
     def _checkTeleportation(self, frame, silhouette):
@@ -466,7 +466,7 @@ class Tracker(object):
         
         :return: The contours and the biggest contour from the mask (None, None) if no contour found
         """
-        contours, hierarchy = cv2.findContours(np.copy(silhouette),
+        image, contours, hierarchy = cv2.findContours(np.copy(silhouette),
                                                 mode=cv2.RETR_LIST, 
                                                 method=cv2.CHAIN_APPROX_NONE) # TODO: check if CHAIN_APPROX_SIMPLE better
         if contours:
@@ -605,7 +605,7 @@ class GuiTracker(Tracker):
                     result.append(self.defaultPos)
                 return result
         except VideoStreamFrameException as e:
-            print('Error with video_stream at frame {}: \n{}'.format(fid, e))
+            print(('Error with video_stream at frame {}: \n{}'.format(fid, e)))
         except (KeyboardInterrupt, EOFError) as e:
             msg = "Recording stopped by user" if (type(e) == KeyboardInterrupt) else str(e)
             self._stream.stopRecording(msg)

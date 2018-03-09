@@ -7,10 +7,10 @@ from roi import Circle
 try:
     import RPi.GPIO as GPIO
 except RuntimeError:
-    print(
+    print((
     'Error import RPi.GPIO',
     'Check that module is installed with aptitude install python-rpi.gpio or python3-rpi.gpio',
-    'Also, make sure that you are root')
+    'Also, make sure that you are root'))
 
 roi = Circle((85, 175), 30)
 

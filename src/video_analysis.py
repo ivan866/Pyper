@@ -9,7 +9,7 @@ However, please note that analysis is not the main goal of this software package
 :author: crousse
 """
 
-from __future__ import division
+
 
 import math
 
@@ -101,7 +101,7 @@ def filterPositions(positions, kernel):
     """
     xs = gauFit([p[0] for p in positions], kernel)
     ys = gauFit([p[1] for p in positions], kernel)
-    positions = np.array(zip(xs, ys))
+    positions = np.array(list(zip(xs, ys)))
     return positions
 
 def getPos(nb):
@@ -129,7 +129,7 @@ def getAngles(positions):
     return angles
         
 def plotAngles(angles, samplingFreq):
-    xVect = np.array(range(len(angles))) / samplingFreq
+    xVect = np.array(list(range(len(angles)))) / samplingFreq
     zeroLine = np.zeros(len(angles))
     plt.plot(xVect, angles, linewidth=0.1)
     plt.plot(xVect, zeroLine, color='g', linewidth=3, linestyle='--')
@@ -140,7 +140,7 @@ def plotAngles(angles, samplingFreq):
     plt.fill_between(xVect, angles, zeroLine, where=angles<zeroLine, color='r', label='Right turns')
     
 def plotDistances(distances, samplingFreq):
-    xVect = np.array(range(len(distances))) / samplingFreq
+    xVect = np.array(list(range(len(distances)))) / samplingFreq
     plt.ylim([0, 10])
     plt.ylabel('distance (pixels)')
     plt.xlabel('time (s)')
@@ -157,7 +157,7 @@ def plotIntegrals(angles, samplingFreq):
     leftTurnIntegral = cumtrapz(anglesLeft, dx=(1/samplingFreq), axis=0)
     rightTurnIntegral = cumtrapz(anglesRight, dx=(1/samplingFreq), axis=0)
     totalIntegral = cumtrapz(angles, dx=(1/samplingFreq), axis=0)
-    xVect = np.array(range(len(leftTurnIntegral))) / samplingFreq
+    xVect = np.array(list(range(len(leftTurnIntegral)))) / samplingFreq
 
     plt.ylim([-180, 180])
     plt.plot(xVect, leftTurnIntegral, color='b', label='Left turns')

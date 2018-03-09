@@ -12,7 +12,6 @@ This may be required if your player doesn't support your format or to fix some v
 import numpy as np
 from scipy.misc import imresize
 import cv2
-from cv2 import cv
 
 from video_stream import RecordedVideoStream
 
@@ -31,7 +30,7 @@ class Transcoder(RecordedVideoStream):
         self.scaleParams = np.array(scaleParams)
         size = self.getFinalSize()
         self.videoWriter = cv2.VideoWriter(destFilePath,
-                                    cv.CV_FOURCC(*'mp4v'),
+                                    cv2.VideoWriter_fourcc(*'mp4v'),
                                     self.fps,
                                     size[::-1],
                                     True)
@@ -48,7 +47,7 @@ class Transcoder(RecordedVideoStream):
     def transcode(self):
         cropParams = self.cropParams
         finalWidth, finalHeight = self.getFinalSize()
-        print('Final size: {},  {}'.format(finalWidth, finalHeight))
+        print(('Final size: {},  {}'.format(finalWidth, finalHeight)))
         widgets=['Encoding Progress: ', Percentage(), Bar()]
         pbar = ProgressBar(widgets=widgets, maxval=self.nFrames).start()
         for i in range(self.nFrames):

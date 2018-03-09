@@ -1,0 +1,12 @@
+numpy
+scipy
+matplotlib
+opencv-python
+PyOpenGL
+pyqt5
+scikit-image
+image
+progressbar2
+python-dateutil
+pyparsing
+configobj

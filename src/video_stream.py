@@ -19,18 +19,17 @@ import scipy
 
 from video_frame import Frame
 import cv2
-from cv2 import cv
 isPi = (platform.machine()).startswith('arm')
 if isPi:
     import picamera.array
     from camera import CvPiCamera
     
 DEFAULT_CAM = 0
-CODEC = cv.CV_FOURCC(*'mp4v') # TODO: check which codecs are available
+CODEC = cv2.VideoWriter_fourcc(*'mp4v')
 FPS = 30
 FRAME_SIZE = (256, 256)
 
-isGraphical = 'PyQt5' in sys.modules.keys()
+isGraphical = 'PyQt5' in list(sys.modules.keys())
 
 def pBar(val):
     modulo = val % 4
@@ -93,7 +92,7 @@ class VideoStream(object):
             else:
                 self.videoWriter.write(tmpColorFrame.copy())
         else:
-            print("skipping save because {} is None".format("frame" if frame is None else "savepath"))
+            print(("skipping save because {} is None".format("frame" if frame is None else "savepath")))
             
     def _init_cam(self):
         pass
@@ -148,7 +147,7 @@ class RecordedVideoStream(VideoStream):
         self.nFrames = self._getNFrames(cv2.VideoCapture(filePath))
         self.size = self._getFrameSize(cv2.VideoCapture(filePath))
         VideoStream.__init__(self, filePath, bgStart, nBackgroundFrames)
-        self.fourcc = int(self.stream.get(cv.CV_CAP_PROP_FOURCC))
+        self.fourcc = int(self.stream.get(cv2.CAP_PROP_FOURCC))
         self.fps = self._getFps()
         self.duration = self.nFrames / float(self.fps)
         
@@ -166,7 +165,7 @@ class RecordedVideoStream(VideoStream):
         dirname, filename = os.path.split(filePath)
         basename, ext = os.path.splitext(filename)
         savePath = os.path.join(dirname, 'recording.avi') # Fixme: should use argument
-        videoWriter = cv2.VideoWriter(savePath, cv.CV_FOURCC(*'mp4v'), 15, self.size, True)
+        videoWriter = cv2.VideoWriter(savePath, cv2.VideoWriter_fourcc(*'mp4v'), 15, self.size, True)
         if not(videoWriter.isOpened()):
             raise VideoStreamIOException("Can't start video writer codec {} probably unsupported".format(CODEC))
         return capture, videoWriter
@@ -176,7 +175,7 @@ class RecordedVideoStream(VideoStream):
         :return: The number of frames per seconds in the current recording
         :rtype: int
         """
-        return int(self.stream.get(cv.CV_CAP_PROP_FPS))
+        return int(self.stream.get(cv2.CAP_PROP_FPS))
         
     def _getFrameSize(self, stream):
         """
@@ -187,8 +186,8 @@ class RecordedVideoStream(VideoStream):
         :return: width, height
         :rtype: (int, int)
         """
-        self.width = int(stream.get(cv.CV_CAP_PROP_FRAME_WIDTH))
-        self.height = int(stream.get(cv.CV_CAP_PROP_FRAME_HEIGHT))
+        self.width = int(stream.get(cv2.CAP_PROP_FRAME_WIDTH))
+        self.height = int(stream.get(cv2.CAP_PROP_FRAME_HEIGHT))
         return (self.width, self.height)
         
     def _getNFrames(self, stream):
@@ -205,7 +204,7 @@ class RecordedVideoStream(VideoStream):
         
         :raises: VideoStreamIOException if video cannot be read
         """
-#        nFrames = stream.get(cv2.cv.CV_CAP_PROP_FRAME_COUNT) # TODO: test
+#        nFrames = stream.get(cv2.CAP_PROP_FRAME_COUNT) # TODO: test
 #        if nFrames >= 1:
 #            return nFrames
 #        else
@@ -269,7 +268,7 @@ class RecordedVideoStream(VideoStream):
         :param str msg: The message to print on closing.
         """
         VideoStream.stopRecording(self, msg)
-        self.stream.set(cv.CV_CAP_PROP_POS_FRAMES, 0)
+        self.stream.set(cv2.CAP_PROP_POS_FRAMES, 0)
         self.currentFrameIdx = -1
     
 
@@ -301,21 +300,21 @@ class UsbVideoStream(VideoStream):
         :type: (cv2.VideoCapture, cv2.VideoWriter)
         """
         capture = cv2.VideoCapture(DEFAULT_CAM)
-        capture.set(cv2.cv.CV_CAP_PROP_FPS, FPS)
-        capture.set(cv2.cv.CV_CAP_PROP_BRIGHTNESS, 100)
+        capture.set(cv2.CAP_PROP_FPS, FPS)
+        capture.set(cv2.CAP_PROP_BRIGHTNESS, 100)
 
         # Try custom resolution
-        widthSet = capture.set(cv2.cv.CV_CAP_PROP_FRAME_WIDTH, UsbVideoStream.FRAME_SIZE[0])
-        heightSet = capture.set(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT, UsbVideoStream.FRAME_SIZE[1])
+        widthSet = capture.set(cv2.CAP_PROP_FRAME_WIDTH, UsbVideoStream.FRAME_SIZE[0])
+        heightSet = capture.set(cv2.CAP_PROP_FRAME_HEIGHT, UsbVideoStream.FRAME_SIZE[1])
         
         # We now have to check because camera can silently refuse size setting (returns False)
         # We thus take whatever is now set (ours or the camera default)
-        actualWidth = int(capture.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH))
-        actualHeight = int(capture.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT))
+        actualWidth = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
+        actualHeight = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
         if not widthSet:
-            print('Width refused by camera, using default of: {}'.format(actualWidth))
+            print(('Width refused by camera, using default of: {}'.format(actualWidth)))
         if not heightSet:
-            print('Height refused by camera, using default of: {}'.format(actualHeight))
+            print(('Height refused by camera, using default of: {}'.format(actualHeight)))
 
         actualSize = (actualWidth, actualHeight) # All in openCV nomenclature
         self.size = actualSize
@@ -463,7 +462,7 @@ class QuickRecordedVideoStream(RecordedVideoStream):
         self.nFrames = self._getNFrames(cv2.VideoCapture(filePath))
         self.size = self.frames[0].shape[:2]
         VideoStream.__init__(self, filePath, bgStart, nBackgroundFrames)
-        self.fourcc = int(self.stream.get(cv.CV_CAP_PROP_FOURCC))
+        self.fourcc = int(self.stream.get(cv2.CAP_PROP_FOURCC))
         self.fps = self._getFps()
         self.duration = self.nFrames / float(self.fps)
         
